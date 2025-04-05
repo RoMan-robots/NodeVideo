@@ -17,13 +17,11 @@ function startStreaming() {
     });
 }
 
-// Записуємо відео в файл
 function startRecording() {
-    outputStream = fs.createWriteStream('output_video.raw'); // Відео буде збережено в raw форматі
+    outputStream = fs.createWriteStream('output_video.raw'); 
     console.log('Запис почався...');
 }
 
-// Зупиняємо запис через 5 секунд
 setTimeout(() => {
     console.log('Запис завершено');
     if (outputStream) {
@@ -31,6 +29,5 @@ setTimeout(() => {
     }
 }, 5000);
 
-// Починаємо захоплення та запис
 startRecording();
 startStreaming();
