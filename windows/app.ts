@@ -1,9 +1,10 @@
-import screen from 'screen_capture';
+// @ts-ignore
+import screenCapture from './addons/screen_capture.node';
 
-screen.startStream((frame) => {
-    console.log(frame);
+(screenCapture as any).startStream((frame: any) => {
+    console.log('Frame:', frame);
 });
 
 setTimeout(() => {
-    screen.stopStream();
+    (screenCapture as any).stopStream();
 }, 5000);

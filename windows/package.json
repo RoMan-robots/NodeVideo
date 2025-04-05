@@ -1,9 +1,14 @@
 {
   "name": "nodevideo",
+  "type": "commonjs",
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "app": "tsc && node dist/app.js && rm -rf dist"
+    "app": "tsc && node app.js && del app.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   },
   "keywords": [],
   "author": "roman",

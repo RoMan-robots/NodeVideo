@@ -1,7 +1,7 @@
-declare module 'screen_capture' {
+declare module './addons/screen_capture.node' {
     export interface ScreenCapture {
-        startStream(callback: (frame: any) => void): void;
-        stopStream(): void;
+        start(callback: (frame: any) => void): void;
+        stop(): void;
     }
     const screen: ScreenCapture;
     export default screen;
