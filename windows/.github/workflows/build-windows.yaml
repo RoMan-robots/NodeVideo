@@ -41,3 +41,9 @@ jobs:
       - name: Build
         run: node-gyp configure # Запуск компіляції за допомогою node-gyp або іншого механізму компіляції
 
+      # Крок 7: Завантаження зібраного файлу .node як артефакту
+      - name: Upload .node file as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: node-addon
+          path: build/Release/*.node  # Шлях до зібраного .node файлу
