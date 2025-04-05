@@ -24,10 +24,11 @@ jobs:
           node-version: '22'  # Вказати версію Node.js, яку використовуєте
 
       # Крок 3: Встановлення Visual Studio Build Tools і Python
-      - name: Install Visual Studio Build Tools and Python
+      - name: Install Tools
         run: |
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
           choco install python2
+          npm i -g node-gyp
           
       # Крок 4: Перевірка, чи правильно встановлені Python і Build Tools
       - name: Check Python and Build Tools
