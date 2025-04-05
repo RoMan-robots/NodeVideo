@@ -23,27 +23,29 @@ jobs:
         with:
           node-version: '22'  # Вказати версію Node.js, яку використовуєте
 
-
-      # Крок 4: Встановлення Python і Build Tools
-      - name: Install Build Tools and Python
+      # Крок 3: Встановлення Visual Studio Build Tools і Python
+      - name: Install Visual Studio Build Tools and Python
         run: |
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
           choco install python2
           
-      # Крок 5: Перевірка, чи правильно встановлені Python і Build Tools
+      # Крок 4: Перевірка, чи правильно встановлені Python і Build Tools
       - name: Check Python and Build Tools
         run: |
-          python3 --version
+          python --version
           npm --version
           g++ --version
-      
-      # Крок 6: Побудова .node файлу
-      - name: Build
-        run: node-gyp configure # Запуск компіляції за допомогою node-gyp або іншого механізму компіляції
+          node-gyp --version
 
-      # Крок 7: Завантаження зібраного файлу .node як артефакту
+      # Крок 5: Побудова .node файлу
+      - name: Build .node file
+        run: |
+          node-gyp configure
+          node-gyp build
+
+      # Крок 6: Завантаження .node файлу як артефакту
       - name: Upload .node file as artifact
         uses: actions/upload-artifact@v2
         with:
           name: node-addon
-          path: build/Release/*.node  # Шлях до зібраного .node файлу
+          path: build/Release/*.node
