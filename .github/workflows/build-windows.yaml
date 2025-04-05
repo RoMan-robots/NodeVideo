@@ -15,11 +15,11 @@ jobs:
     steps:
       # Крок 1: Клонування репозиторію
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Оновлена версія
 
       # Крок 2: Налаштування Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3  # Оновлена версія
         with:
           node-version: '22'  # Вказати версію Node.js, яку використовуєте
 
@@ -45,7 +45,7 @@ jobs:
 
       # Крок 6: Завантаження .node файлу як артефакту
       - name: Upload .node file as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Оновлена версія
         with:
           name: node-addon
           path: build/Release/*.node
