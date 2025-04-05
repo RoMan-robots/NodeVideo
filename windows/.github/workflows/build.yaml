@@ -1,0 +1,43 @@
+name: Build .node module on Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest  # Використовуємо Windows runner
+
+    steps:
+      # Крок 1: Клонування репозиторію
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Крок 2: Налаштування Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'  # Вказати версію Node.js, яку використовуєте
+
+
+      # Крок 4: Встановлення Python і Build Tools
+      - name: Install Build Tools and Python
+        run: |
+          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+          choco install python2
+          
+      # Крок 5: Перевірка, чи правильно встановлені Python і Build Tools
+      - name: Check Python and Build Tools
+        run: |
+          python3 --version
+          npm --version
+          g++ --version
+      
+      # Крок 6: Побудова .node файлу
+      - name: Build
+        run: node-gyp configure # Запуск компіляції за допомогою node-gyp або іншого механізму компіляції
+
