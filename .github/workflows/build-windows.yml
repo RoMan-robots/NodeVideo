@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3  # Оновлена версія
         with:
-          node-version: '22'  # Вказати версію Node.js, яку використовуєте
+          node-version: '20'  # Вказати версію Node.js, яку використовуєте
 
       # Крок 3: Встановлення Visual Studio Build Tools і Python
       - name: Install Tools
