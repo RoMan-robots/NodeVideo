@@ -1,51 +1,23 @@
-name: Build .node module on Windows
+name: Test Upload Artifact
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
-    runs-on: windows-latest  # Використовуємо Windows runner
+  test:
+    runs-on: windows-latest
 
     steps:
-      # Крок 1: Клонування репозиторію
       - name: Checkout code
-        uses: actions/checkout@v3  # Оновлена версія
+        uses: actions/checkout@v2
 
-      # Крок 2: Налаштування Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3  # Оновлена версія
+      - name: Create test file
+        run: echo "Hello, World!" > testfile.txt
+
+      - name: Upload test file as artifact
+        uses: actions/upload-artifact@v2
         with:
-          node-version: '22'  # Вказати версію Node.js, яку використовуєте
-
-      # Крок 3: Встановлення Visual Studio Build Tools і Python
-      - name: Install Visual Studio Build Tools and Python
-        run: |
-          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
-          choco install python2
-          
-      # Крок 4: Перевірка, чи правильно встановлені Python і Build Tools
-      - name: Check Python and Build Tools
-        run: |
-          python --version
-          npm --version
-          g++ --version
-          node-gyp --version
-
-      # Крок 5: Побудова .node файлу
-      - name: Build .node file
-        run: |
-          node-gyp configure
-          node-gyp build
-
-      # Крок 6: Завантаження .node файлу як артефакту
-      - name: Upload .node file as artifact
-        uses: actions/upload-artifact@v3  # Оновлена версія
-        with:
-          name: node-addon
-          path: build/Release/*.node
+          name: test-artifact
+          path: testfile.txt
