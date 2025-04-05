@@ -25,7 +25,7 @@ jobs:
 
       - name: Echo
         run: |
-          echo "The project path is: $GITHUB_WORKSPACE"
+          echo "The project path is: ${GITHUB_WORKSPACE}"
 
       # Крок 3: Встановлення Visual Studio Build Tools і Python
       - name: Install Tools
