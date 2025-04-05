@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "screen_capture",
-      "sources": ["addons/screen_capture.cc"],
+      "sources": ["screen_capture.cc"],
       "include_dirs": [
         "<!(node -p \"require('node-addon-api').include\")"
       ],
