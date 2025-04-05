@@ -45,7 +45,7 @@ jobs:
 
       # Крок 6: Завантаження .node файлу як артефакту
       - name: Upload .node file as artifact
-        uses: actions/upload-artifact@v3  # Оновлена версія
+        uses: softprops/action-gh-release@v1
         with:
           name: node-addon
           path: build/Release/*.node
