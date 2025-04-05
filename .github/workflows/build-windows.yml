@@ -33,8 +33,9 @@ jobs:
       # Крок X: Встановлення залежностей
       - name: Install dependencies
         run: |
-          npm install node-addon-api
+          npm install node-addon-api --save
           npm i -g node-gyp
+
           
       # Крок 4: Перевірка, чи правильно встановлені Python і Build Tools
       - name: Check Python and Build Tools
