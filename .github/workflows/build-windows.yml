@@ -23,10 +23,13 @@ jobs:
         with:
           node-version: '20'  # Вказати версію Node.js, яку використовуєте
 
+      - name: Echo
+        run: |
+          echo "The project path is: $GITHUB_WORKSPACE"
+
       # Крок 3: Встановлення Visual Studio Build Tools і Python
       - name: Install Tools
         run: |
-          echo "The project path is: $GITHUB_WORKSPACE"
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
           choco install python2
           
