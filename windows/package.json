@@ -7,8 +7,8 @@
     "app": "tsc && node app.js && del app.js"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.17.30",
+    "typescript": "^5.8.3"
   },
   "keywords": [],
   "author": "roman",
