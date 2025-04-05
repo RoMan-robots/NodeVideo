@@ -3,10 +3,10 @@ name: Build .node module on Windows
 on:
   push:
     branches:
-      - main
+      - addon
   pull_request:
     branches:
-      - main
+      - addon
 
 jobs:
   build:
