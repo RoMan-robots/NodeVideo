@@ -4,8 +4,6 @@
 #include <dxgi1_2.h>
 #include <thread>
 #include <chrono>
-#include <vector>
-
 #pragma comment(lib, "d3d11.lib")
 
 IDXGIOutputDuplication* duplication = nullptr;
@@ -43,27 +41,16 @@ void StreamLoop(Napi::ThreadSafeFunction tsfn) {
             D3D11_TEXTURE2D_DESC desc;
             frame->GetDesc(&desc);
 
-            // Отримуємо пікселі кадру
-            D3D11_MAPPED_SUBRESOURCE mappedResource;
-            context->Map(frame, 0, D3D11_MAP_READ, 0, &mappedResource);
-
-            // Отримуємо дані в буфер
-            std::vector<uint8_t> buffer(mappedResource.RowPitch * desc.Height);
-            memcpy(buffer.data(), mappedResource.pData, buffer.size());
-
-            tsfn.BlockingCall([desc, buffer](Napi::Env env, Napi::Function jsCallback) {
+            tsfn.BlockingCall([desc](Napi::Env env, Napi::Function jsCallback) {
                 Napi::Object obj = Napi::Object::New(env);
                 obj.Set("width", desc.Width);
                 obj.Set("height", desc.Height);
-                obj.Set("data", Napi::Buffer<uint8_t>::New(env, buffer.data(), buffer.size()));
                 jsCallback.Call({ obj });
             });
-
-            context->Unmap(frame, 0);
             frame->Release();
         }
         duplication->ReleaseFrame();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 5));  // 5 FPS
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 5));
     }
     tsfn.Release();
 }
