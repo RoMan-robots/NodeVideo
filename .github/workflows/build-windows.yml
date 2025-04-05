@@ -1,0 +1,45 @@
+name: Build .node module on Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Tools
+        run: |
+          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+          choco install python2
+
+      - name: Install dependencies
+        run: |
+          npm install node-addon-api
+          npm i -g node-gyp
+
+      - name: Build .node file
+        run: |
+          node-gyp configure
+          node-gyp build
+
+      - name: Create Release and Upload .node file
+        uses: softprops/action-gh-release@v1
+        with:
+          name: node-addon-release
+          tag_name: addon_test
+          files: build/Release/*.node
+          token: ${{ secrets.GITHUB_TOKEN }}
