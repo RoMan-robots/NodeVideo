@@ -33,7 +33,7 @@ jobs:
       # Крок X: Встановлення залежностей
       - name: Install dependencies
         run: |
-          npm install node-addon-api --save
+          npm install node-addon-api
           npm i -g node-gyp
 
           
