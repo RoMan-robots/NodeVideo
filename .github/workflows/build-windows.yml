@@ -28,6 +28,12 @@ jobs:
         run: |
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
           choco install python2
+          
+
+      # Крок X: Встановлення залежностей
+      - name: Install dependencies
+        run: |
+          npm install node-addon-api
           npm i -g node-gyp
           
       # Крок 4: Перевірка, чи правильно встановлені Python і Build Tools
@@ -37,6 +43,8 @@ jobs:
           npm --version
           g++ --version
           node-gyp --version
+
+     
 
       # Крок 5: Побудова .node файлу
       - name: Build .node file
