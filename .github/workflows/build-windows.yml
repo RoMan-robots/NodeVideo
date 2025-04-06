@@ -23,16 +23,11 @@ jobs:
         with:
           node-version: '20'  # Вказати версію Node.js, яку використовуєте
 
-      - name: Echo
-        run: |
-          echo "The project path is: ${GITHUB_WORKSPACE}"
-
       # Крок 3: Встановлення Visual Studio Build Tools і Python
       - name: Install Tools
         run: |
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
           choco install python2
-          
 
       # Крок X: Встановлення залежностей
       - name: Install dependencies
@@ -40,7 +35,6 @@ jobs:
           npm install node-addon-api
           npm i -g node-gyp
 
-          
       # Крок 4: Перевірка, чи правильно встановлені Python і Build Tools
       - name: Check Python and Build Tools
         run: |
@@ -48,8 +42,6 @@ jobs:
           npm --version
           g++ --version
           node-gyp --version
-
-     
 
       # Крок 5: Побудова .node файлу
       - name: Build .node file
@@ -59,7 +51,7 @@ jobs:
 
       # Крок 6: Завантаження .node файлу як артефакту
       - name: Upload .node file as artifact
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
           name: node-addon
           path: build/Release/*.node
