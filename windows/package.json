@@ -1,0 +1,12 @@
+{
+  "name": "nodevideo",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "scripts": {
+    "app": "tsc && node dist/app.js && rm -rf dist"
+  },
+  "keywords": [],
+  "author": "roman",
+  "license": "ISC",
+  "description": ""
+}
