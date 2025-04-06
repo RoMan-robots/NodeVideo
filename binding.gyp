@@ -8,6 +8,12 @@
       ],
       "defines": [
         "NODE_ADDON_API_CPP_EXCEPTIONS"
+      ],
+      "libraries": [
+        "dxgi.lib",
+        "d3d11.lib",
+        "ole32.lib",
+        "uuid.lib"
       ]
     }
   ]
