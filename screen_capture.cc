@@ -41,16 +41,20 @@ void StreamLoop(Napi::ThreadSafeFunction tsfn) {
             D3D11_TEXTURE2D_DESC desc;
             frame->GetDesc(&desc);
 
-            tsfn.BlockingCall([desc](Napi::Env env, Napi::Function jsCallback) {
-                Napi::Object obj = Napi::Object::New(env);
-                obj.Set("width", desc.Width);
-                obj.Set("height", desc.Height);
-                jsCallback.Call({ obj });
-            });
+            try {
+                tsfn.BlockingCall([desc](Napi::Env env, Napi::Function jsCallback) {
+                    Napi::Object obj = Napi::Object::New(env);
+                    obj.Set("width", desc.Width);
+                    obj.Set("height", desc.Height);
+                    jsCallback.Call({ obj });
+                });
+            } catch (const std::exception& e) {
+                std::cerr << "Error during callback: " << e.what() << std::endl;
+            }
             frame->Release();
         }
         duplication->ReleaseFrame();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 5)); // 5 FPS
     }
     tsfn.Release();
 }
