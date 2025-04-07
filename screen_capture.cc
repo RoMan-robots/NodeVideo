@@ -34,28 +34,50 @@ bool Init() {
 void StreamLoop(Napi::ThreadSafeFunction tsfn) {
     while (streaming) {
         DXGI_OUTDUPL_FRAME_INFO infoFrame;
-        IDXGIResource* resource;
+        IDXGIResource* resource = nullptr;
+
         if (FAILED(duplication->AcquireNextFrame(100, &infoFrame, &resource))) continue;
 
-        ID3D11Texture2D* frame;
+        ID3D11Texture2D* frame = nullptr;
         if (SUCCEEDED(resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&frame))) {
             D3D11_TEXTURE2D_DESC desc;
             frame->GetDesc(&desc);
 
-            try {
-                tsfn.BlockingCall([desc](Napi::Env env, Napi::Function jsCallback) {
-                    Napi::Object obj = Napi::Object::New(env);
-                    obj.Set("width", desc.Width);
-                    obj.Set("height", desc.Height);
-                    jsCallback.Call({ obj });
-                });
-            } catch (const std::exception& e) {
-                std::cerr << "Error during callback: " << e.what() << std::endl;
+            desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+            desc.Usage = D3D11_USAGE_STAGING;
+            desc.BindFlags = 0;
+            desc.MiscFlags = 0;
+
+            ID3D11Texture2D* stagingTex = nullptr;
+            if (SUCCEEDED(device->CreateTexture2D(&desc, nullptr, &stagingTex))) {
+                context->CopyResource(stagingTex, frame);
+
+                D3D11_MAPPED_SUBRESOURCE mapped;
+                if (SUCCEEDED(context->Map(stagingTex, 0, D3D11_MAP_READ, 0, &mapped))) {
+                    size_t imageSize = desc.Height * mapped.RowPitch;
+                    uint8_t* bufferCopy = new uint8_t[imageSize];
+                    memcpy(bufferCopy, mapped.pData, imageSize);
+
+                    tsfn.BlockingCall([desc, bufferCopy, imageSize](Napi::Env env, Napi::Function jsCallback) {
+                        Napi::Object obj = Napi::Object::New(env);
+                        obj.Set("width", desc.Width);
+                        obj.Set("height", desc.Height);
+                        obj.Set("data", Napi::Buffer<uint8_t>::Copy(env, bufferCopy, imageSize));
+                        jsCallback.Call({ obj });
+                        delete[] bufferCopy;
+                    });
+
+                    context->Unmap(stagingTex, 0);
+                }
+                stagingTex->Release();
             }
             frame->Release();
         }
+
+        if (resource) resource->Release();
         duplication->ReleaseFrame();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 5)); // 5 FPS
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 5));
     }
     tsfn.Release();
 }
