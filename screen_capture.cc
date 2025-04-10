@@ -54,14 +54,16 @@ void StreamLoop(Napi::ThreadSafeFunction tsfn) {
 
                 D3D11_MAPPED_SUBRESOURCE mapped;
                 if (SUCCEEDED(context->Map(stagingTex, 0, D3D11_MAP_READ, 0, &mapped))) {
-                    size_t rowSize = desc.Width * 4;
-                    size_t imageSize = rowSize * desc.Height;
+                    size_t tightRowSize = desc.Width * 4;
+                    size_t imageSize = tightRowSize * desc.Height;
                     uint8_t* bufferCopy = new uint8_t[imageSize];
 
-                    for (UINT y = 0; y < desc.Height; y++) {
-                        memcpy(bufferCopy + y * rowSize,
-                               static_cast<uint8_t*>(mapped.pData) + y * mapped.RowPitch,
-                               rowSize);
+                    for (UINT y = 0; y < desc.Height; ++y) {
+                        memcpy(
+                            bufferCopy + y * tightRowSize,
+                        static_cast<uint8_t*>(mapped.pData) + y * mapped.RowPitch,
+                        tightRowSize
+                    );
                     }
 
                     tsfn.BlockingCall([desc, bufferCopy, imageSize](Napi::Env env, Napi::Function jsCallback) {
