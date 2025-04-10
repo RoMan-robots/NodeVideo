@@ -18,9 +18,7 @@ function startStreaming() {
 
         if (outputStream && !outputStream.writableEnded) {
             outputStream.write(buffer);
-            if (frameCount % 5 === 0) {
-                console.log(`[Кадр ${frameCount}] Розмір: ${buffer.length} байт. Загалом записано: ${Math.round(totalBytes / 1024 / 1024)} MB`);
-            }
+            console.log(`[Кадр ${frameCount}] Розмір: ${buffer.length} байт. Загалом записано: ${Math.round(totalBytes / 1024 / 1024)} MB`); 
             lastWriteErrorShown = false;
         } else {
             if (!lastWriteErrorShown) {
