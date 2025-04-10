@@ -5,32 +5,51 @@ import * as path from 'path';
 const napi = require(path.join(__dirname, 'addons', 'screen_capture.node'));
 
 let outputStream: fs.WriteStream | null = null;
+let totalBytes = 0;
+let frameCount = 0;
+let lastWriteErrorShown = false;
 
 function startStreaming() {
     console.log('Починаємо трансляцію відео...');
     napi.start((frame: any) => {
         const buffer = frame.data as Buffer;
-        console.log('Отримано новий кадр:', buffer.length, 'байт');
-        if (outputStream) {
+        frameCount++;
+        totalBytes += buffer.length;
+
+        if (outputStream && !outputStream.writableEnded) {
             outputStream.write(buffer);
+            if (frameCount % 5 === 0) {
+                console.log(`[Кадр ${frameCount}] Розмір: ${buffer.length} байт. Загалом записано: ${Math.round(totalBytes / 1024 / 1024)} MB`);
+            }
+            lastWriteErrorShown = false;
+        } else {
+            if (!lastWriteErrorShown) {
+                console.error("⚠️ Потік закрито або не ініціалізовано");
+                lastWriteErrorShown = true;
+            }
         }
     });
 }
 
 function startRecording() {
+    console.log('Починаємо запис у файл "output_video.raw"...');
     outputStream = fs.createWriteStream('output_video.raw');
-    console.log('Запис почався...');
-    if (!outputStream) {
-        console.error("Не вдалося створити потік для запису.");
-    }
+    outputStream.on('open', () => {
+        console.log('Потік для запису відкрито');
+    });
+    outputStream.on('error', (err) => {
+        console.error('Помилка при записі:', err.message);
+    });
 }
 
 setTimeout(() => {
-    console.log('Запис завершено');
-    if (outputStream) {
-        outputStream.end();
+    console.log('⏹️ Завершення запису...');
+    if (outputStream && !outputStream.writableEnded) {
+        outputStream.end(() => {
+            console.log(`✅ Запис завершено. Загальна кількість кадрів: ${frameCount}, обсяг: ${Math.round(totalBytes / 1024 / 1024)} MB`);
+        });
     }
-}, 5000); 
+}, 5000);
 
 startRecording();
 startStreaming();
