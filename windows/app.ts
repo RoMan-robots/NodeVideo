@@ -41,10 +41,10 @@ function startRecording() {
 }
 
 setTimeout(() => {
-    console.log('⏹️ Завершення запису...');
+    console.log('Завершення запису...');
     if (outputStream && !outputStream.writableEnded) {
         outputStream.end(() => {
-            console.log(`✅ Запис завершено. Загальна кількість кадрів: ${frameCount}, обсяг: ${Math.round(totalBytes / 1024 / 1024)} MB`);
+            console.log(`Запис завершено. Загальна кількість кадрів: ${frameCount}, обсяг: ${Math.round(totalBytes / 1024 / 1024)} MB`);
         });
     }
 }, 5000);
